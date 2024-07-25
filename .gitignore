@@ -11,8 +11,19 @@ consensus/lighthouse/*
 consensus/nimbus/*
 secrets/*
 
+!secrets/.gitignore
+!execution/geth/.gitignore
+!execution/geth/clef/.gitignore
+!execution/besu/.gitignore
+!execution/nethermind/.gitignore
+!consensus/lighthouse/.gitignore
+!consensus/nimbus/.gitignore
+
 keystores/lighthouse/*
 keystores/nimbus/*
+
+!keystores/lighthouse/.gitignore
+!keystores/nimbus/.gitignore
 
 docker-compose.yml
 
