@@ -1,0 +1,307 @@
+version: "3.9"
+
+networks:
+  ethereum:
+    name: ethereum
+    driver: bridge
+
+services:
+{% if START_NETHERMIND == "true" %}
+  execution-nethermind:
+    image: nethermind/nethermind:{{ E_VERSION }}
+    container_name: execution
+    restart: unless-stopped
+    stop_grace_period: 1m
+    env_file: [".env", "./environments/.env.execution"]
+    networks:
+      - ethereum
+    ports:
+      - 30303:30303/tcp # p2p
+      - 30303:30303/udp # p2p
+      - 8545:8545
+      - 8551:8551
+    volumes:
+      - ./execution/nethermind:/data
+      - ./secrets/jwt.hex:/jwt.hex
+      - ./scripts/nethermind/start-execution.sh:/scripts/start-execution.sh
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    entrypoint: sh /scripts/start-execution.sh
+    logging:
+      options:
+        max-size: "1g"
+{% elif START_BESU == "true" %}
+  execution-besu:
+    image: hyperledger/besu:{{ E_VERSION }}
+    container_name: execution
+    restart: unless-stopped
+    stop_grace_period: 1m
+    env_file: [".env", "./environments/.env.execution"]
+    networks:
+      - ethereum
+    ports:
+      - 30303:30303/tcp # p2p
+      - 30303:30303/udp # p2p
+      - 8545:8545
+      - 8551:8551
+    volumes:
+      - ./execution/besu:/var/lib/besu/data
+      - ./secrets/jwt.hex:/jwt.hex
+      - ./scripts/besu/start-execution.sh:/scripts/start-execution.sh
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    entrypoint: sh /scripts/start-execution.sh
+    logging:
+      options:
+        max-size: "1g"
+{% elif START_GETH == "true" %}
+  execution-geth:
+    image: ethereum/client-go:{{ E_VERSION }}
+    container_name: execution
+    stop_grace_period: 2m
+    restart: unless-stopped
+    env_file: [".env", "./environments/.env.execution"]
+    networks:
+      - ethereum
+    volumes:
+      - ./execution/geth:/root/.ethereum
+      - ./scripts/geth/start-execution.sh:/scripts/start-execution.sh
+      - ./secrets/jwt.hex:/jwt.hex
+    ports:
+      - 30303:30303/tcp
+      - 30303:30303/udp
+      - 8545:8545
+      - 8551:8551
+    entrypoint: sh /scripts/start-execution.sh
+    logging:
+      options:
+        max-size: "1g"
+{% elif START_RETH == "true" %}
+  execution-reth:
+    image: ghcr.io/paradigmxyz/reth:{{ E_VERSION }}
+    container_name: execution
+    stop_grace_period: 2m
+    restart: unless-stopped
+    env_file: [".env", "./environments/.env.execution"]
+    networks:
+      - ethereum
+    volumes:
+      - ./execution/reth:/root/.local/share/reth
+      - ./execution/reth/logs:/root/rethlogs
+      - ./scripts/reth/start-execution.sh:/scripts/start-execution.sh
+      - ./secrets/jwt.hex:/jwt.hex
+    ports:
+      - '9001:9001' # metrics
+      - '30303:30303' # eth/66 peering
+      - '8545:8545' # rpc
+      - '8551:8551' # engine
+    entrypoint: sh /scripts/start-execution.sh
+    logging:
+      options:
+        max-size: "1g"
+{% elif START_ERIGON == "true" %}
+  execution-erigon:
+    image: thorax/erigon:{{ E_VERSION }}
+    restart: unless-stopped
+    container_name: execution
+    networks:
+      - ethereum
+    env_file: [".env", "./environments/.env.execution"]
+    volumes:
+      - ./execution/erigon:/home/erigon/.local/share/erigon
+      - ./scripts/erigon/start-execution.sh:/scripts/start-execution.sh
+      - ./secrets/jwt.hex:/jwt.hex
+    ports:
+      - '30303:30303'
+      - '8545:8545'
+      - '8551:8551'
+    entrypoint: sh /scripts/start-execution.sh
+    logging:
+      options:
+        max-size: "1g"
+{% endif %}
+{% if START_NIMBUS_CC_VC == "true" %}
+  consensus-nimbus:
+    image: statusim/nimbus-eth2:{{ C_VERSION }}
+    container_name: consensus
+    restart: unless-stopped
+    stop_grace_period: 1m
+    env_file: [".env", "./environments/.env.consensus", "./environments/.env.validator"]
+    networks:
+      - ethereum
+    ports:
+      - 9000:9000
+      - 5052:{{ BEACON_PORT }}
+    volumes:
+      - ./consensus/nimbus:/home/user/nimbus/data
+      - ./secrets/jwt.hex:/jwt.hex
+      - ./scripts/nimbus/start-consensus.sh:/scripts/start-consensus.sh
+      - ./keystores/nimbus:/validator-keys
+    entrypoint: sh /scripts/start-consensus.sh
+    logging:
+      options:
+        max-size: "1g"
+{% elif START_LIGHTHOUSE_CC == "true" %}
+  consensus-lighthouse:
+    image: sigp/lighthouse:{{ C_VERSION }}
+    container_name: consensus
+    restart: unless-stopped
+    stop_grace_period: 1m
+    networks:
+      - ethereum
+    volumes:
+      - ./consensus/lighthouse:/root/.lighthouse
+      - ./scripts/lighthouse/start-consensus.sh:/scripts/start-consensus.sh:ro
+      - ./secrets/jwt.hex:/jwt.hex
+    ports:
+      - 5052:5052
+    env_file: [".env", "./environments/.env.consensus"]
+    entrypoint: sh /scripts/start-consensus.sh
+    logging:
+      options:
+        max-size: "1g"
+  {% if START_LIGHTHOUSE_VC == "true" %}
+  validator-lighthouse:
+    image: sigp/lighthouse:{{ C_VERSION }}
+    container_name: validator
+    restart: unless-stopped
+    stop_grace_period: 1m
+    networks:
+      - ethereum
+    volumes:
+      - ./consensus/lighthouse:/root/.lighthouse
+      - ./scripts/lighthouse/start-validator.sh:/scripts/start-validator.sh:ro
+      - ./secrets/jwt.hex:/jwt.hex
+      - ./keystores/lighthouse:/root/validator_keys:ro
+    env_file: [".env", "./environments/.env.consensus", "./environments/.env.validator"]
+    entrypoint: sh /scripts/start-validator.sh
+    logging:
+      options:
+        max-size: "1g"
+  {% endif %}
+{% endif %}
+{% if START_EXECBACKUP == "true" %}
+  execution-backup:
+    build: 
+      context: execbackup
+      args:
+        - EB_RELEASE_TAG={{ EB_RELEASE_TAG }}
+    container_name: failover
+    restart: unless-stopped
+    env_file: [".env", "./environments/.env.execbackup"]
+    networks:
+      - ethereum
+    volumes:
+      - ./execbackup/scripts:/scripts
+    ports:
+      - 9090:9090
+    logging:
+      options:
+        max-size: "1g"
+{% endif %}
+{% if START_OPENEXECUTION == "true" %}
+  open-execution:
+    build: ./openexecution
+    platform: linux/amd64
+    container_name: openexecution
+    restart: unless-stopped
+    env_file: [".env", "./environments/.env.openexecution"]
+    depends_on:
+      - open-execution-db
+    networks:
+      - ethereum
+    volumes:
+      - ./openexecution/scripts:/scripts
+    ports:
+      - 9091:9091
+    logging:
+      options:
+        max-size: "1g"
+  open-execution-db:
+    container_name: openexecution-db
+    platform: linux/amd64
+    restart: unless-stopped
+    image: postgres:15.4-alpine3.18
+    env_file: [".env", "./environments/.env.openexecution"]
+    networks:
+      - ethereum
+    volumes:
+      - ./openexecution/data:/var/lib/postgresql/data/
+    ports:
+      - "45432:45432"
+    command: postgres -p 45432
+    logging:
+      options:
+        max-size: "1g"
+{% endif %}
+{% if START_MEV_BOOST == "true" %}
+  mev-boost:
+    image: flashbots/mev-boost:{{ MEV_VERSION }}
+    container_name: mev-boost
+    restart: unless-stopped
+    env_file: [".env", "./environments/.env.mev"]
+    networks:
+      - ethereum
+    volumes:
+      - ./scripts/mev/start-mev.sh:/scripts/start-mev.sh
+    ports:
+      - 18550:18550
+    entrypoint: sh /scripts/start-mev.sh
+    logging:
+      options:
+        max-size: "1g"
+{% endif %}
+{% if START_NGINX_PROXY == "true" %}
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    restart: unless-stopped
+    container_name: nginx-proxy
+    networks:
+      - ethereum
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+{% endif %}
+{% if START_SOCAT == "true" %}
+  socat:
+    build: ./socat
+    platform: linux/amd64
+    container_name: socat
+    restart: unless-stopped
+    env_file: [".env"]
+    environment:
+      - PORT=8080
+      - ORIGIN_HOST=failover
+      - ORIGIN_PORT=9090
+      - LOGS_DIR=/logs/socat.log
+    volumes:
+      - ./socat/socat.sh:/socat.sh
+      - ./socat/logs:/logs
+    entrypoint: sh /socat.sh
+    logging:
+      options:
+        max-size: "1g"
+{% endif %}
+{% if START_CLEF == "true" %}
+  clef:
+    image: ethereum/client-go:alltools-{{ E_VERSION }}
+    platform: linux/amd64
+    container_name: clef
+    restart: unless-stopped
+    env_file: [".env", "./environments/.env.execution"]
+    networks:
+      - ethereum
+    volumes:
+      - ./execution/geth:/root/.ethereum
+      - ./scripts/geth/start-clef.sh:/scripts/start-clef.sh
+    depends_on:
+      - execution-geth
+    links:
+      - execution-geth
+    entrypoint: sh /scripts/start-clef.sh
+    tty: true
+    logging:
+      options:
+        max-size: "1g"
+{% endif %}
