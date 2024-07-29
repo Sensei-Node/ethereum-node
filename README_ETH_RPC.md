@@ -61,12 +61,40 @@ For macOS you will need to start docker daemon by opening docker app. In linux t
 
 ## View node logs
 
+You can check current node status by getting all container logs
+
 ```bash
 docker compose logs -f 
 ```
 
 ## Stop the node
 
+This will stop all running containers in the current workdir
+
 ```bash
 docker compose down
 ```
+
+## Useful node API calls
+
+### Execution client sync status
+
+Returns an object with data about the sync status or false
+
+```bash
+curl -X POST --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}' http://localhost:8545
+```
+
+### Consensus client sync status
+
+Requests the beacon node to describe if it's currently syncing or not, and if it is, what block it is up to
+
+```bash
+curl -X GET http://localhost:5052/eth/v1/node/syncing
+```
+
+
+### Official API docs
+
+- [Beacon node API](https://ethereum.github.io/beacon-APIs/)
+- [JSON-RPC Execution API](https://ethereum.org/en/developers/docs/apis/json-rpc/)
