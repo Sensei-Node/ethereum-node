@@ -151,7 +151,21 @@ There is a specific readme for running an ethereum mainnet RPC node with netherm
 
 ## Invalid passphrase for keystores
 
-If there are special characters on the passphrase string (like $) sometimes it gets striped. So in order for this issue not to occur make sure to suround passphrase in single quotes on the .env file (or on the docker-compose.yml if variables are set in there). Eg. `PASSPHRASE='XXAS@das23A$sda2dl2D'`
+If there are special characters on the passphrase string (like $) sometimes it gets striped. So in order for this issue not to occur make sure to suround passphrase in single quotes on the .env file (or on the docker-compose.yml if variables are set in there). Eg. `V_PASSPHRASE='d3$2ed&422.#'`
+
+## Peers not being discovered
+
+There are some cases where for some networks you are not able to find peers. This can be due to the network not having enough peers, or having the node in a region that is isolated from other peers (like some small country). For these cases you could try to open local p2p ports in your router (execution client 30303/udp and 30303tcp), move your node to another location, or you could try adding trusted peers. 
+
+The latter depends on the client used, for instance for [geth client](https://geth.ethereum.org/docs/fundamentals/peer-to-peer).
+
+## Consensus client slow sync
+
+Since consensus client support checkpoint sync, having it synced is something that should take few minutes (in good network connections). If for some reason it got out of sync (power interruption, network interruption, etc.) and the logs state that it is far behind. You could try dropping databse and re-sync it from scratch. You can achieve this either by doing a db purge (in lighthouse for instance it is done by starting the node with the flag `--purge-db`), or simply stop the node, remove `consensus/lighthouse/mainnet` and re-start it. (This is assuming you used lighthouse mainnet as client and network).
+
+## Execution client failover
+
+In case you want to have execution client redundancy, so that if one fails validators won't cease to perform their duties, a useful tool called [execution-backup](https://github.com/TennisBowling/executionbackup) is included. It was developed by `TennisBowling`, we addapted it to be used with docker and docker-compose. In case you want to use it you should enable it in the `.env` by setting `START_EXECBACKUP=true`, and fill with proper variables the file `environments/.env.execbackup`.
 
 # License
 

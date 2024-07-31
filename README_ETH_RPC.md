@@ -75,6 +75,10 @@ This will stop all running containers in the current workdir
 docker compose down
 ```
 
+## Extra: Run a validator
+
+If you would like to add validator capabilities to your recently launched node, you can do so by following the steps specified in this [README_ETH_VALIDATOR.md](README_ETH_VALIDATOR.md)
+
 ## Useful node API calls
 
 ### Execution client sync status
@@ -82,7 +86,7 @@ docker compose down
 Returns an object with data about the sync status or false
 
 ```bash
-curl -X POST --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}' http://localhost:8545
+curl -X POST -H "Content-Type: application/json" --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}' http://localhost:8545
 ```
 
 ### Consensus client sync status
@@ -90,7 +94,7 @@ curl -X POST --data '{"jsonrpc":"2.0","method":"eth_syncing","params":[],"id":1}
 Requests the beacon node to describe if it's currently syncing or not, and if it is, what block it is up to
 
 ```bash
-curl -X GET http://localhost:5052/eth/v1/node/syncing
+curl -X GET -H "Content-Type: application/json" http://localhost:5052/eth/v1/node/syncing
 ```
 
 
