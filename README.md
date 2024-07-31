@@ -143,9 +143,9 @@ For the last step, the `shasum -a 256 rules.js | cut -f1` might need to be done 
 
 Also it is required to have prepared in order to start the CLEF signer a rules.js file (sample is included)
 
-# Run ethereum mainnet RPC node docs
+# Run ethereum holesky RPC node docs
 
-There is a specific readme for running an ethereum mainnet RPC node with nethermind and lighthouse [README_ETH_RPC.md](README_ETH_RPC.md)
+There is a specific readme for running an ethereum holesky RPC node with nethermind and lighthouse [README_ETH_RPC.md](README_ETH_RPC.md)
 
 # Common errors
 
@@ -155,17 +155,29 @@ If there are special characters on the passphrase string (like $) sometimes it g
 
 ## Peers not being discovered
 
-There are some cases where for some networks you are not able to find peers. This can be due to the network not having enough peers, or having the node in a region that is isolated from other peers (like some small country). For these cases you could try to open local p2p ports in your router (execution client 30303/udp and 30303tcp), move your node to another location, or you could try adding trusted peers. 
+There are some cases where for some networks you are not able to find peers. This can be due to the network not having enough peers, or having the node in a region that is isolated from other peers (like some small country). For these cases you could try either of the following: 
+- Open local p2p ports in your router (execution client 30303/udp and 30303tcp);
+- Move your node to another location; 
+- Or you could try adding trusted peers. 
 
 The latter depends on the client used, for instance for [geth client](https://geth.ethereum.org/docs/fundamentals/peer-to-peer).
 
 ## Consensus client slow sync
 
-Since consensus client support checkpoint sync, having it synced is something that should take few minutes (in good network connections). If for some reason it got out of sync (power interruption, network interruption, etc.) and the logs state that it is far behind. You could try dropping databse and re-sync it from scratch. You can achieve this either by doing a db purge (in lighthouse for instance it is done by starting the node with the flag `--purge-db`), or simply stop the node, remove `consensus/lighthouse/mainnet` and re-start it. (This is assuming you used lighthouse mainnet as client and network).
+Since consensus client support checkpoint sync, having it synced is something that should take few minutes (in good network connections). If for some reason it got out of sync (power interruption, network interruption, etc.) and the logs state that it is far behind. You could try dropping databse and re-sync it from scratch. You can achieve this either by doing a db purge (in lighthouse for instance it is done by starting the node with the flag `--purge-db`), or simply stop the node, remove `consensus/lighthouse/holesky` and re-start it. (This is assuming you used lighthouse holesky as client and network).
 
 ## Execution client failover
 
-In case you want to have execution client redundancy, so that if one fails validators won't cease to perform their duties, a useful tool called [execution-backup](https://github.com/TennisBowling/executionbackup) is included. It was developed by `TennisBowling`, we addapted it to be used with docker and docker-compose. In case you want to use it you should enable it in the `.env` by setting `START_EXECBACKUP=true`, and fill with proper variables the file `environments/.env.execbackup`.
+In case you want to have execution client redundancy, so that if one fails validators won't cease to perform their duties, a useful tool called [execution-backup](https://github.com/TennisBowling/executionbackup) is included. It was developed by `TennisBowling`, we addapted it to be used with docker and docker-compose. In case you want to use it you should:
+- Enable it in the `.env` by setting `START_EXECBACKUP=true`;
+- Edit the `environments/.env.consensus` file and set the `C_EXECUTION_ENGINE` variable to `C_EXECUTION_ENGINE=http://failover:9090`;
+- Fill with proper variables the file `environments/.env.execbackup`.
+
+## Client version update
+
+In case you want to perform an update to any of the clients, you should do so by specifying the version tag in the `.env`, and then perform a `docker compose down` followed by a [clean startup](#start-up-services).
+
+Note: if using `latest`/`stable` tags, you could try with a `docker compose pull` and, if changes were pulled, perform a `docker compose up -d` instead of the above described steps.
 
 # License
 
