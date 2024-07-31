@@ -147,7 +147,7 @@ Also it is required to have prepared in order to start the CLEF signer a rules.j
 
 There is a specific readme for running an ethereum holesky RPC node with nethermind and lighthouse [README_ETH_RPC.md](README_ETH_RPC.md)
 
-# Common errors
+# Node mainteinance and troubleshooting
 
 ## Invalid passphrase for keystores
 
