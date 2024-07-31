@@ -166,6 +166,8 @@ The latter depends on the client used, for instance for [geth client](https://ge
 
 Since consensus client support checkpoint sync, having it synced is something that should take few minutes (in good network connections). If for some reason it got out of sync (power interruption, network interruption, etc.) and the logs state that it is far behind. You could try dropping databse and re-sync it from scratch. You can achieve this either by doing a db purge (in lighthouse for instance it is done by starting the node with the flag `--purge-db`), or simply stop the node, remove `consensus/lighthouse/holesky` and re-start it. (This is assuming you used lighthouse holesky as client and network).
 
+Checkpoint sync endpoints can be gathered from here https://eth-clients.github.io/checkpoint-sync-endpoints
+
 ## Execution client failover
 
 In case you want to have execution client redundancy, so that if one fails validators won't cease to perform their duties, a useful tool called [execution-backup](https://github.com/TennisBowling/executionbackup) is included. It was developed by `TennisBowling`, we addapted it to be used with docker and docker-compose. In case you want to use it you should:
