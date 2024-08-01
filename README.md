@@ -164,16 +164,18 @@ The latter depends on the client used, for instance for [geth client](https://ge
 
 ## Consensus client slow sync
 
-Since consensus client support checkpoint sync, having it synced is something that should take few minutes (in good network connections). If for some reason it got out of sync (power interruption, network interruption, etc.) and the logs state that it is far behind. You could try dropping databse and re-sync it from scratch. You can achieve this either by doing a db purge (in lighthouse for instance it is done by starting the node with the flag `--purge-db`), or simply stop the node, remove `consensus/lighthouse/holesky` and re-start it. (This is assuming you used lighthouse holesky as client and network).
+Since consensus client supports checkpoint sync, having it synced is something that should take a few minutes (in good network conditions). If for some reason it got out of sync (power interruption, network interruption, etc.) and the logs state that it is far behind, you could try dropping the databse and re-sync it from scratch. 
+
+You can achieve this either by doing a db purge (in lighthouse for instance it is done by starting the node with the flag `--purge-db`), or simply stop the node, remove `consensus/lighthouse/holesky` and re-start it. (This is assuming you used lighthouse holesky as client and network).
 
 Checkpoint sync endpoints can be gathered from here https://eth-clients.github.io/checkpoint-sync-endpoints
 
 ## Execution client failover
 
-In case you want to have execution client redundancy, so that if one fails validators won't cease to perform their duties, a useful tool called [execution-backup](https://github.com/TennisBowling/executionbackup) is included. It was developed by `TennisBowling`, we addapted it to be used with docker and docker-compose. In case you want to use it you should:
+In case you want to have execution client redundancy, so that if one fails validators won't cease to perform their duties, a useful tool called [execution-backup](https://github.com/TennisBowling/executionbackup) is included. It was developed by `TennisBowling`, we addapted it to be used with docker and docker-compose. For setting it up you should:
 - Enable it in the `.env` by setting `START_EXECBACKUP=true`;
-- Edit the `environments/.env.consensus` file and set the `C_EXECUTION_ENGINE` variable to `C_EXECUTION_ENGINE=http://failover:9090`;
-- Fill with proper variables the file `environments/.env.execbackup`.
+- Edit the `environments/.env.consensus` file and set `C_EXECUTION_ENGINE=http://failover:9090` (note that the port will depend on the `PORT=9090` variable being set in the `environments/.env.execbackup` file);
+- Fill with proper variable values on the file `environments/.env.execbackup`.
 
 ## Client version update
 
