@@ -1,0 +1,22 @@
+
+services:
+  socat:
+    build: ./socat
+    platform: linux/amd64
+    container_name: socat
+    restart: unless-stopped
+    env_file: [".env"]
+    environment:
+      - PORT=8080
+      - ORIGIN_HOST=failover
+      - ORIGIN_PORT=9090
+      - LOGS_DIR=/logs/socat.log
+    networks:
+      - ethereum
+    volumes:
+      - ./scripts/socat/start.sh:/start.sh
+      - ./socat/logs:/logs
+    entrypoint: sh /start.sh
+    logging:
+      options:
+        max-size: "1g"

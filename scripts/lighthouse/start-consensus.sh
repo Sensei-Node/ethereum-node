@@ -9,10 +9,6 @@ if [ "$START_LIGHTHOUSE_CC" = "true" ]; then
 	MEV_BOOST_PARAMS=""
 	SECRETS_FILE="/jwt.hex"
 
-	if [ "$START_LIGHTHOUSE_VC" != "" ]; then
-		ETH1_FLAG=--eth1
-	fi
-
 	if [ "$C_NETWORK" = "" ]; then
 		E_NETWORK=$DEFAULT_NETWORK
 	fi
@@ -60,6 +56,5 @@ if [ "$START_LIGHTHOUSE_CC" = "true" ]; then
 		$MEV_BOOST_PARAMS \
 		$METRICS_PARAMS \
 		$GRAFFITI_PARAM \
-		$ETH1_FLAG \
 		$CHECKPOINT_SYNC_URL_PARAM
 fi

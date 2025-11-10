@@ -1,0 +1,17 @@
+
+services:
+  mev-boost:
+    image: flashbots/mev-boost:${MEV_VERSION:-latest}
+    container_name: mev-boost
+    restart: unless-stopped
+    env_file: [".env", "./environments/.env.mev"]
+    networks:
+      - ethereum
+    volumes:
+      - ./scripts/mev-boost/start.sh:/scripts/start.sh
+    ports:
+      - 18550:18550
+    entrypoint: sh /scripts/start.sh
+    logging:
+      options:
+        max-size: "1g"

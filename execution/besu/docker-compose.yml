@@ -1,0 +1,25 @@
+
+services:
+  execution-besu:
+    image: hyperledger/besu:${E_VERSION:-latest}
+    container_name: execution
+    restart: unless-stopped
+    stop_grace_period: 1m
+    env_file: [".env", "./environments/.env.execution"]
+    networks:
+      - ethereum
+    ports:
+      - 30303:30303/tcp # p2p
+      - 30303:30303/udp # p2p
+      - 8545:8545
+      - 8551:8551
+    volumes:
+      - ./execution/besu/data:/var/lib/besu/data
+      - ./secrets/jwt.hex:/jwt.hex
+      - ./scripts/besu/start-execution.sh:/scripts/start-execution.sh
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    entrypoint: sh /scripts/start-execution.sh
+    logging:
+      options:
+        max-size: "1g"

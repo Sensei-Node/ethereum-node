@@ -1,0 +1,19 @@
+
+services:
+  execution-backup:
+    build: 
+      context: execbackup
+      args:
+        - EB_RELEASE_TAG=${EB_RELEASE_TAG:-latest}
+    container_name: failover
+    restart: unless-stopped
+    env_file: [".env", "./environments/.env.execbackup"]
+    networks:
+      - ethereum
+    volumes:
+      - ./execbackup/scripts:/scripts
+    ports:
+      - 9090:9090
+    logging:
+      options:
+        max-size: "1g"

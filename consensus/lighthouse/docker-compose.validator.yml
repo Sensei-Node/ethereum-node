@@ -1,0 +1,19 @@
+
+services:
+  validator-lighthouse:
+    image: sigp/lighthouse:${C_VERSION:-latest}
+    container_name: validator
+    restart: unless-stopped
+    stop_grace_period: 1m
+    networks:
+      - ethereum
+    volumes:
+      - ./consensus/lighthouse/data:/root/.lighthouse
+      - ./scripts/lighthouse/start-validator.sh:/scripts/start-validator.sh:ro
+      - ./secrets/jwt.hex:/jwt.hex
+      - ./keystores/lighthouse:/root/validator_keys:ro
+    env_file: [".env", "./environments/.env.consensus", "./environments/.env.validator"]
+    entrypoint: sh /scripts/start-validator.sh
+    logging:
+      options:
+        max-size: "1g"

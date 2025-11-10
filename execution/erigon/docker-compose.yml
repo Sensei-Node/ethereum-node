@@ -1,0 +1,21 @@
+
+services:
+  execution-erigon:
+    image: thorax/erigon:${E_VERSION:-latest}
+    restart: unless-stopped
+    container_name: execution
+    networks:
+      - ethereum
+    env_file: [".env", "./environments/.env.execution"]
+    volumes:
+      - ./execution/erigon/data:/home/erigon/.local/share/erigon
+      - ./scripts/erigon/start-execution.sh:/scripts/start-execution.sh
+      - ./secrets/jwt.hex:/jwt.hex
+    ports:
+      - '30303:30303'
+      - '8545:8545'
+      - '8551:8551'
+    entrypoint: sh /scripts/start-execution.sh
+    logging:
+      options:
+        max-size: "1g"

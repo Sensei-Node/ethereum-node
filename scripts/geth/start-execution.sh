@@ -35,6 +35,10 @@ if [ "$START_GETH" = "true" ]; then
 		NETWORK_PARAMS="--holesky"
 	fi
 
+	if [ "$E_NETWORK" = "hoodi" ]; then
+		NETWORK_PARAMS="--hoodi"
+	fi
+
 	if [ "$E_PRIVATE_NETWORK" = "true" ]; then
 		echo "Starting gETH with custom private network"
 		NETWORK_PARAMS="--networkid $E_NETWORK_ID"

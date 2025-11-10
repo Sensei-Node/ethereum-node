@@ -1,0 +1,4 @@
+networks:
+  ethereum:
+    name: ethereum
+    driver: bridge
