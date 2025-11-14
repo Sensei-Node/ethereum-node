@@ -219,6 +219,39 @@ check_jwt_secret() {
     fi
 }
 
+# Validate Erigon internal consensus configuration
+validate_erigon_internal_consensus() {
+    # Check if Erigon is enabled and internal consensus is enabled
+    if [ "${START_ERIGON}" = "true" ] && [ "${ENABLE_INTERNAL_CONSENSUS_CLI}" = "true" ]; then
+        # Check if any consensus client is enabled
+        if [ "${START_NIMBUS_CC_VC}" = "true" ]; then
+            print_error "ERROR: Cannot run Nimbus consensus when Erigon internal consensus is enabled"
+            print_error "Erigon's internal consensus replaces the need for a separate consensus client"
+            print_error "Either:"
+            print_error "  - Set ENABLE_INTERNAL_CONSENSUS_CLI=false in environments/.env.execution"
+            print_error "  - Set START_NIMBUS_CC_VC=false in .env"
+            exit 1
+        fi
+        
+        if [ "${START_LIGHTHOUSE_CC}" = "true" ]; then
+            print_error "ERROR: Cannot run Lighthouse consensus when Erigon internal consensus is enabled"
+            print_error "Erigon's internal consensus replaces the need for a separate consensus client"
+            print_error "You can still run Lighthouse validator (START_LIGHTHOUSE_VC=true) alongside Erigon"
+            print_error "Either:"
+            print_error "  - Set ENABLE_INTERNAL_CONSENSUS_CLI=false in environments/.env.execution"
+            print_error "  - Set START_LIGHTHOUSE_CC=false in .env"
+            exit 1
+        fi
+        
+        # Inform user about validator compatibility
+        if [ "${START_LIGHTHOUSE_VC}" = "true" ]; then
+            print_info "✓ Running Lighthouse validator with Erigon internal consensus" >&2
+        else
+            print_info "✓ Running Erigon with internal consensus (no external consensus client needed)" >&2
+        fi
+    fi
+}
+
 # Main execution
 main() {
     print_info "=== Ethereum Node Startup Script ==="
@@ -238,6 +271,9 @@ main() {
     
     # Load environment variables
     load_env_files
+    
+    # Validate Erigon internal consensus configuration
+    validate_erigon_internal_consensus
     
     # Check/create JWT secret
     check_jwt_secret

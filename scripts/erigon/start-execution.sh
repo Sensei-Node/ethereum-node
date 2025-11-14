@@ -2,7 +2,7 @@
 
 if [ "$START_ERIGON" = "true" ]; then
     DEFAULT_NETWORK=mainnet
-    START_PARAMS=""
+    START_PARAMS="--externalcl "
 
     if [ "$E_NETWORK" = "" ]; then
         E_NETWORK=$DEFAULT_NETWORK
@@ -10,12 +10,17 @@ if [ "$START_ERIGON" = "true" ]; then
 
     if [ "$ENABLE_INTERNAL_CONSENSUS_CLI" = "true" ]; then
         echo "Starting erigon with internal consensus cli. Sync purposes only."
-        START_PARAMS="--internalcl"
+        START_PARAMS="--caplin.enable-upnp \
+        --caplin.discovery.addr=0.0.0.0 \
+        --caplin.discovery.port=4000 \
+        --caplin.discovery.tcpport=4001 \
+        --beacon.api.port=5052 \
+        --beacon.api=beacon,validator,builder,config,debug,events,node,lighthouse \
+        "
     fi
 
     erigon \
         $START_PARAMS \
-        --externalcl \
         --datadir=/data/erigon \
         --chain=${E_NETWORK} \
         --port=30303 \
