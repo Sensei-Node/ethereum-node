@@ -123,16 +123,13 @@ build_compose_command() {
         ((services_count++))
     fi
     
-    if [ "${START_OPENEXECUTION}" = "true" ]; then
-        compose_files="$compose_files -f openexecution/docker-compose.yml"
-        print_info "  ✓ Open execution" >&2
-        ((services_count++))
-    fi
-    
     if [ "${START_NGINX_PROXY}" = "true" ]; then
         compose_files="$compose_files -f docker-compose.nginx.yml"
         print_info "  ✓ Nginx proxy" >&2
         ((services_count++))
+        
+        # Check if VIRTUAL_HOST is configured for any enabled service
+        check_nginx_virtual_hosts
     fi
     
     if [ "${START_SOCAT}" = "true" ]; then
@@ -153,6 +150,50 @@ build_compose_command() {
     fi
     
     echo "$compose_files"
+}
+
+# Check if nginx-proxy VIRTUAL_HOST variables are configured
+check_nginx_virtual_hosts() {
+    local has_execution=false
+    local has_consensus=false
+    local warnings=()
+    
+    # Check if any execution client is enabled
+    if [ "${START_NETHERMIND}" = "true" ] || [ "${START_BESU}" = "true" ] || \
+       [ "${START_GETH}" = "true" ] || [ "${START_RETH}" = "true" ] || \
+       [ "${START_ERIGON}" = "true" ]; then
+        has_execution=true
+    fi
+    
+    # Check if any consensus client is enabled
+    if [ "${START_LIGHTHOUSE_CC}" = "true" ] || [ "${START_NIMBUS_CC_VC}" = "true" ]; then
+        has_consensus=true
+    fi
+    
+    # Load environment files to check VIRTUAL_HOST values
+    if [ "$has_execution" = true ] && [ -f "./environments/.env.execution" ]; then
+        local exec_virtual_host=$(grep "^VIRTUAL_HOST=" ./environments/.env.execution | cut -d'=' -f2)
+        if [ -z "$exec_virtual_host" ]; then
+            warnings+=("  ⚠️  VIRTUAL_HOST not set in environments/.env.execution")
+        fi
+    fi
+    
+    if [ "$has_consensus" = true ] && [ -f "./environments/.env.consensus" ]; then
+        local consensus_virtual_host=$(grep "^VIRTUAL_HOST=" ./environments/.env.consensus | cut -d'=' -f2)
+        if [ -z "$consensus_virtual_host" ]; then
+            warnings+=("  ⚠️  VIRTUAL_HOST not set in environments/.env.consensus")
+        fi
+    fi
+    
+    # Display warnings if any
+    if [ ${#warnings[@]} -gt 0 ]; then
+        print_warning "Nginx-proxy is enabled but VIRTUAL_HOST not configured:" >&2
+        for warning in "${warnings[@]}"; do
+            echo "$warning" >&2
+        done
+        print_info "Nginx-proxy will run but won't route traffic without VIRTUAL_HOST set." >&2
+        print_info "See 'Nginx Reverse Proxy' section in README.md for setup." >&2
+    fi
 }
 
 # Check if JWT secret exists, create if not
@@ -217,12 +258,12 @@ main() {
             ;;
         down|stop)
             print_info "Stopping services..."
-            docker compose $compose_files down
+            docker compose $compose_files down --remove-orphans
             print_info "Services stopped"
             ;;
         restart)
             print_info "Restarting services..."
-            docker compose $compose_files down
+            docker compose $compose_files down --remove-orphans
             docker compose $compose_files up -d --build
             print_info "Services restarted"
             ;;

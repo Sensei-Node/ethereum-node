@@ -37,6 +37,11 @@ if [ "$START_NIMBUS_CC_VC" = "true" ]; then
 		DOPPEL_PARAMS=""
 	fi
 
+	GRAFFITI_PARAMS=""
+	if [ "$C_GRAFFITI" != "" ]; then
+		GRAFFITI_PARAMS="--graffiti=${C_GRAFFITI}"
+	fi
+
 	/home/user/nimbus-eth2/build/nimbus_beacon_node \
 		--network=${C_NETWORK} \
 		--data-dir=/home/user/nimbus/data/${C_NETWORK} \
@@ -48,7 +53,8 @@ if [ "$START_NIMBUS_CC_VC" = "true" ]; then
 		$METRICS_PARAMS \
 		$REST_PARAMS \
 		$FEE_RECEPIENT_PARAMS \
-		$DOPPEL_PARAMS $MEV_PARAMS \
-		--history=prune \
-		--graffiti=${C_GRAFFITI}
+		$DOPPEL_PARAMS \
+		$MEV_PARAMS \
+		$GRAFFITI_PARAMS \
+		--history=prune
 fi

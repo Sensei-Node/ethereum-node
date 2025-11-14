@@ -5,7 +5,7 @@ This guide shows you how to add validator capabilities to your Ethereum node. Yo
 ## Prerequisites
 
 - Running Ethereum execution + consensus client (see [README_ETH_RPC.md](README_ETH_RPC.md))
-- 32 ETH per validator you want to run
+- 32+ ETH per validator you want to run
 - Validator keystores (generated in next step)
 
 ## Step 1: Generate Validator Keystores
@@ -31,7 +31,7 @@ Follow the prompts:
 1. Choose mnemonic language
 2. Enter number of validators to create
 3. Set a strong keystore passphrase
-4. Select network (mainnet/holesky)
+4. Select network (mainnet/sepolia)
 
 **Save your mnemonic securely!** You'll need it to recover your validator keys.
 
@@ -96,7 +96,7 @@ V_SUGGESTED_FEE_RECIPIENT=0xYourEthereumAddress
 Before starting your validator, deposit 32 ETH for each validator using the Ethereum Launchpad:
 
 - **Mainnet:** https://launchpad.ethereum.org/
-- **Holesky Testnet:** https://holesky.launchpad.ethereum.org/
+- **Sepolia Testnet:** https://sepolia.launchpad.ethereum.org/
 
 **⚠️ Critical:** Only deposit after:
 1. You've securely backed up your mnemonic
@@ -154,7 +154,7 @@ docker exec -it consensus lighthouse \
   --beacon-node http://localhost:5052
 ```
 
-For Holesky testnet, replace `mainnet` with `holesky`.
+For Sepolia testnet, replace `mainnet` with `sepolia`.
 
 ### You'll be prompted for:
 
@@ -245,7 +245,7 @@ Restart your node:
 - Have a backup power supply
 
 ### Testing
-- Always test on Holesky testnet first
+- Always test on Sepolia testnet first
 - Verify your setup for at least a week on testnet
 - Practice exits on testnet before mainnet
 

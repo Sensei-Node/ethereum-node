@@ -5,6 +5,7 @@ if [ "$START_LIGHTHOUSE_VC" = "true" ]; then
 	START_PARAMS=""
 	MEV_BOOST_PARAMS=""
 	API_PARAMS=""
+	GRAFFITI_PARAMS=""
 	VOTING_ETH2_NODES=http://consensus:5052
 
 	if [ "$V_FEE_RECEPIENT" != "" ]; then
@@ -32,6 +33,10 @@ if [ "$START_LIGHTHOUSE_VC" = "true" ]; then
 	DOPPELGANGER_PROTECTION="--enable-doppelganger-protection "
 	fi
 
+	if [ "$V_GRAFFITI" != "" ]; then
+	GRAFFITI_PARAMS="--graffiti \"$V_GRAFFITI\" "
+	fi
+
 	# Base dir
 	DATADIR=/root/.lighthouse/$C_NETWORK
 
@@ -57,6 +62,7 @@ if [ "$START_LIGHTHOUSE_VC" = "true" ]; then
 			$METRICS_PARAMS \
 			--beacon-nodes $VOTING_ETH2_NODES \
 			$DOPPELGANGER_PROTECTION \
+			$GRAFFITI_PARAMS \
 			$START_PARAMS \
 			$API_PARAMS
 	fi

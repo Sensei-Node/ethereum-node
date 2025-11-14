@@ -40,8 +40,8 @@ Popular MEV-Boost relays for mainnet:
 
 ### Testnet Relays
 
-For Holesky testnet:
-- **Flashbots Holesky**: https://boost-relay-holesky.flashbots.net
+For Sepolia testnet:
+- **Flashbots Sepolia**: https://boost-relay-sepolia.flashbots.net
 
 ## Usage
 
@@ -125,7 +125,7 @@ Choose relays carefully:
 
 ### Network Compatibility
 
-Make sure your relay endpoints match your network (mainnet, holesky, etc.). Using mainnet relays on a testnet won't work.
+Make sure your relay endpoints match your network (mainnet, sepolia, etc.). Using mainnet relays on a testnet won't work.
 
 ### Registration
 

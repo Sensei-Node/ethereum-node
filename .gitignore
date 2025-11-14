@@ -40,16 +40,12 @@ consensus/lighthouse/data/*
 !consensus/lighthouse/data/.gitignore
 consensus/nimbus/data/*
 !consensus/nimbus/data/.gitignore
-consensus/lambda/data/*
-!consensus/lambda/data/.gitignore
 
 # Keep compose files and READMEs
 !consensus/lighthouse/docker-compose*.yml
 !consensus/lighthouse/README.md
 !consensus/nimbus/docker-compose.yml
 !consensus/nimbus/README.md
-!consensus/lambda/docker-compose.yml
-!consensus/lambda/README.md
 
 # Validator keystores (sensitive!)
 keystores/lighthouse/*
@@ -58,7 +54,6 @@ keystores/nimbus/*
 !keystores/nimbus/.gitignore
 
 # Additional service data
-openexecution/data/*
 execbackup/data/*
 socat/logs/*
 mev-boost/data/*

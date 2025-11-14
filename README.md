@@ -176,9 +176,6 @@ ethereum-node/
 ├── execbackup/                 # Execution backup/failover
 │   └── docker-compose.yml
 │
-├── openexecution/              # Execution multiplexer
-│   └── docker-compose.yml
-│
 ├── socat/                      # Network interceptor
 │   ├── Dockerfile
 │   └── docker-compose.yml
@@ -199,8 +196,7 @@ ethereum-node/
 │   ├── .env.consensus
 │   ├── .env.validator
 │   ├── .env.mev
-│   ├── .env.execbackup
-│   └── .env.openexecution
+│   └── .env.execbackup
 │
 ├── scripts/                    # Service entrypoint scripts
 │   ├── geth/start-execution.sh
@@ -254,7 +250,6 @@ ethereum-node/
 
 - `START_MEV_BOOST=true` - MEV-Boost (for validators)
 - `START_EXECBACKUP=true` - Execution failover
-- `START_OPENEXECUTION=true` - Multi-validator support
 - `START_NGINX_PROXY=true` - Nginx reverse proxy
 - `START_CLEF=true` - Clef signer (Geth private networks)
 - `START_SOCAT=true` - Request logger
@@ -269,8 +264,8 @@ Edit `environments/.env.consensus` to enable fast sync (~15 minutes vs days):
 # Mainnet
 C_CHECKPOINT_URL=https://sync.invis.tools/
 
-# Holesky testnet
-C_CHECKPOINT_URL=https://checkpoint-sync.holesky.ethpandaops.io/
+# Sepolia testnet
+C_CHECKPOINT_URL=https://checkpoint-sync.sepolia.ethpandaops.io/
 
 # More endpoints: https://eth-clients.github.io/checkpoint-sync-endpoints
 ```
@@ -296,6 +291,42 @@ To enable MEV-Boost:
 | Exec Backup | 9090 | Failover API |
 
 **Firewall:** Open ports 30303 and 9000 for optimal peer connections.
+
+## Nginx Reverse Proxy (Domain-Based Access)
+
+Expose your RPC and Beacon API via domain names instead of IP:port.
+
+**Enable:**
+```bash
+# In .env
+START_NGINX_PROXY=true
+```
+
+**Configure domains in environment files:**
+```bash
+# In environments/.env.execution
+VIRTUAL_HOST=rpc.mynode.com
+VIRTUAL_PORT=8545
+
+# In environments/.env.consensus
+VIRTUAL_HOST=beacon.mynode.com
+VIRTUAL_PORT=5052
+```
+
+**Setup DNS A records pointing to your server IP, then restart:**
+```bash
+./node.sh restart
+```
+
+**Access your services:**
+```bash
+curl http://rpc.mynode.com -X POST -H "Content-Type: application/json" \
+  --data '{"jsonrpc":"2.0","method":"eth_blockNumber","params":[],"id":1}'
+
+curl http://beacon.mynode.com/eth/v1/node/health
+```
+
+**⚠️ Security:** HTTP is unencrypted. For production, use SSL/TLS (Let's Encrypt), authentication, and firewall rules.
 
 ## Monitoring Sync Status
 
