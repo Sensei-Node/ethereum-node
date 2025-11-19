@@ -17,6 +17,3 @@ services:
       - ./scripts/socat/start.sh:/start.sh
       - ./socat/logs:/logs
     entrypoint: sh /start.sh
-    logging:
-      options:
-        max-size: "1g"

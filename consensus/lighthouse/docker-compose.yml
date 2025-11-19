@@ -16,6 +16,3 @@ services:
       - 5052:5052
     env_file: [".env", "./environments/.env.consensus"]
     entrypoint: sh /scripts/start-consensus.sh
-    logging:
-      options:
-        max-size: "1g"

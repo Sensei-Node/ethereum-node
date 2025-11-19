@@ -17,6 +17,3 @@ services:
       - execution-geth
     entrypoint: sh /scripts/start-clef.sh
     tty: true
-    logging:
-      options:
-        max-size: "1g"

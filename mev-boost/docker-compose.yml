@@ -12,6 +12,3 @@ services:
     ports:
       - 18550:18550
     entrypoint: sh /scripts/start.sh
-    logging:
-      options:
-        max-size: "1g"

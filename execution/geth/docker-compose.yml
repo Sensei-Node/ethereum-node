@@ -18,6 +18,3 @@ services:
       - 8545:8545
       - 8551:8551
     entrypoint: sh /scripts/start-execution.sh
-    logging:
-      options:
-        max-size: "1g"

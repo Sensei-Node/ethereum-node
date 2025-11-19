@@ -14,6 +14,3 @@ services:
       - ./keystores/lighthouse:/root/validator_keys:ro
     env_file: [".env", "./environments/.env.consensus", "./environments/.env.validator"]
     entrypoint: sh /scripts/start-validator.sh
-    logging:
-      options:
-        max-size: "1g"

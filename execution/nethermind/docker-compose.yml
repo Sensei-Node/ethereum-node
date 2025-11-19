@@ -19,6 +19,3 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /etc/localtime:/etc/localtime:ro
     entrypoint: sh /scripts/start-execution.sh
-    logging:
-      options:
-        max-size: "1g"

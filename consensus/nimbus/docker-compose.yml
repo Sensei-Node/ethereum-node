@@ -16,6 +16,3 @@ services:
       - ./scripts/nimbus/start-consensus.sh:/scripts/start-consensus.sh
       - ./keystores/nimbus:/validator-keys
     entrypoint: sh /scripts/start-consensus.sh
-    logging:
-      options:
-        max-size: "1g"

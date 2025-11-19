@@ -19,6 +19,3 @@ services:
       - '8545:8545' # rpc
       - '8551:8551' # engine
     entrypoint: sh /scripts/start-execution.sh
-    logging:
-      options:
-        max-size: "1g"
