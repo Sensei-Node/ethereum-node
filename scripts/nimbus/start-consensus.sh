@@ -8,9 +8,9 @@ if [ "$START_NIMBUS_CC_VC" = "true" ]; then
 		--trusted-node-url=${C_CHECKPOINT_URL}
 	fi
 
-	FEE_RECEPIENT_PARAMS=""
-	if [ "$V_FEE_RECEPIENT" != "" ]; then
-		FEE_RECEPIENT_PARAMS="--suggested-fee-recipient=$V_FEE_RECEPIENT "
+	FEE_RECIPIENT_PARAMS=""
+	if [ "$V_FEE_RECIPIENT" != "" ]; then
+		FEE_RECIPIENT_PARAMS="--suggested-fee-recipient=$V_FEE_RECIPIENT "
 	fi
 
 	MEV_PARAMS=""
@@ -52,7 +52,7 @@ if [ "$START_NIMBUS_CC_VC" = "true" ]; then
 		--udp-port=9000 \
 		$METRICS_PARAMS \
 		$REST_PARAMS \
-		$FEE_RECEPIENT_PARAMS \
+		$FEE_RECIPIENT_PARAMS \
 		$DOPPEL_PARAMS \
 		$MEV_PARAMS \
 		$GRAFFITI_PARAMS \

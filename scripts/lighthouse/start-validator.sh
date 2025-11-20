@@ -8,8 +8,8 @@ if [ "$START_LIGHTHOUSE_VC" = "true" ]; then
 	GRAFFITI_PARAMS=""
 	VOTING_ETH2_NODES=http://consensus:5052
 
-	if [ "$V_FEE_RECEPIENT" != "" ]; then
-		START_PARAMS="--suggested-fee-recipient=$V_FEE_RECEPIENT "
+	if [ "$V_FEE_RECIPIENT" != "" ]; then
+		START_PARAMS="--suggested-fee-recipient=$V_FEE_RECIPIENT "
 	fi
 
 	if [ "$V_START_API" != "" ]; then

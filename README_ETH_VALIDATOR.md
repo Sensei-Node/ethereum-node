@@ -10,28 +10,28 @@ This guide shows you how to add validator capabilities to your Ethereum node. Yo
 
 ## Step 1: Generate Validator Keystores
 
-Use the official [Ethereum Staking Deposit CLI](https://github.com/ethereum/staking-deposit-cli) to create validator keys.
+Use the official [Ethstaker Ethereum Staking Deposit CLI](https://github.com/ethstaker/ethstaker-deposit-cli) to create validator keys.
 
 ### Download the CLI
 
-Download the latest release for your platform from the [releases page](https://github.com/ethereum/staking-deposit-cli/releases).
+Download the latest release for your platform from the [releases page](https://github.com/ethstaker/ethstaker-deposit-cli/releases).
 
 ### Generate Keys with Withdrawal Address
 
 **Important:** The withdrawal address is where your staked ETH will be sent. This cannot be changed later!
 
 ```bash
-cd staking-deposit-cli
+cd ethstaker-deposit-cli
 
 # Replace ADDRESS with your Ethereum withdrawal address
-./deposit new-mnemonic --execution_address=ADDRESS
+./deposit new-mnemonic --withdrawal_address=ADDRESS
 ```
 
 Follow the prompts:
 1. Choose mnemonic language
 2. Enter number of validators to create
 3. Set a strong keystore passphrase
-4. Select network (mainnet/sepolia)
+4. Select network (mainnet/sepolia/hoodi)
 
 **Save your mnemonic securely!** You'll need it to recover your validator keys.
 
@@ -42,14 +42,14 @@ Copy the generated keystores to the appropriate directory for your validator cli
 ### For Lighthouse Validator
 
 ```bash
-# Generated keystores are in staking-deposit-cli/validator_keys/
-cp staking-deposit-cli/validator_keys/keystore-m_*.json keystores/lighthouse/
+# Generated keystores are in ethstaker-deposit-cli/validator_keys/
+cp ethstaker-deposit-cli/validator_keys/keystore-m_*.json keystores/lighthouse/
 ```
 
 ### For Nimbus Validator
 
 ```bash
-cp staking-deposit-cli/validator_keys/keystore-m_*.json keystores/nimbus/
+cp ethstaker-deposit-cli/validator_keys/keystore-m_*.json keystores/nimbus/
 ```
 
 ## Step 3: Configure Validator
@@ -84,9 +84,6 @@ V_FEE_RECIPIENT=0xYourEthereumAddress
 
 # Keystore passphrase - what you set during key generation
 V_PASSPHRASE='your-keystore-passphrase'
-
-# Suggested fee recipient (same as above)
-V_SUGGESTED_FEE_RECIPIENT=0xYourEthereumAddress
 ```
 
 **Security note:** If your passphrase contains special characters, use single quotes.
@@ -97,6 +94,7 @@ Before starting your validator, deposit 32 ETH for each validator using the Ethe
 
 - **Mainnet:** https://launchpad.ethereum.org/
 - **Sepolia Testnet:** https://sepolia.launchpad.ethereum.org/
+- **Hoodi Testnet:** https://hoodi.launchpad.ethereum.org/
 
 **⚠️ Critical:** Only deposit after:
 1. You've securely backed up your mnemonic
