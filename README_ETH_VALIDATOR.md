@@ -35,6 +35,8 @@ Follow the prompts:
 
 **Save your mnemonic securely!** You'll need it to recover your validator keys.
 
+**⚠️ Notice:** if you get an error stating `[Error] The given withdrawal address is not in checksum form.` convert it to the required form via copying and pasting it from etherscan.io.
+
 ## Step 2: Import Keystores
 
 Copy the generated keystores to the appropriate directory for your validator client.
@@ -221,6 +223,11 @@ Restart your node:
 ```bash
 ./node.sh restart
 ```
+
+Lists of available relays are maintained by:
+
+- [Ethstaker](https://github.com/ethstaker/ethstaker-guides/blob/main/MEV-relay-list.md) [[2]](https://ethstaker.org/mev-relay-list)
+- [Lido](https://research.lido.fi/t/lido-on-ethereum-call-for-relay-providers/2844)
 
 ## Best Practices
 
