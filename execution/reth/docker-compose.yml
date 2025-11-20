@@ -1,0 +1,21 @@
+
+services:
+  execution-reth:
+    image: ghcr.io/paradigmxyz/reth:${E_VERSION:-latest}
+    container_name: execution
+    stop_grace_period: 2m
+    restart: unless-stopped
+    env_file: [".env", "./environments/.env.execution"]
+    networks:
+      - ethereum
+    volumes:
+      - ./execution/reth/data:/root/.local/share/reth
+      - ./execution/reth/logs:/root/rethlogs
+      - ./scripts/reth/start-execution.sh:/scripts/start-execution.sh
+      - ./secrets/jwt.hex:/jwt.hex
+    ports:
+      - '9001:9001' # metrics
+      - '30303:30303' # eth/66 peering
+      - '8545:8545' # rpc
+      - '8551:8551' # engine
+    entrypoint: sh /scripts/start-execution.sh

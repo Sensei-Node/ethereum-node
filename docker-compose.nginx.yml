@@ -1,0 +1,12 @@
+
+services:
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    restart: unless-stopped
+    container_name: nginx-proxy
+    networks:
+      - ethereum
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro

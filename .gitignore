@@ -1,31 +1,76 @@
-!.gitignore
-.env*
+# Environment files (user-specific configuration)
+.env
+.env.*
+!default.env
+!environments/default.env.*
 
+# JWT secret
 .jwt
-
-execution/geth/*
-!execution/geth/clef
-execution/besu/*
-execution/nethermind/*
-consensus/lighthouse/*
-consensus/nimbus/*
 secrets/*
-
 !secrets/.gitignore
-!execution/geth/.gitignore
+
+# Execution client data
+execution/geth/data/*
+!execution/geth/data/.gitignore
+execution/besu/data/*
+!execution/besu/data/.gitignore
+execution/nethermind/data/*
+!execution/nethermind/data/.gitignore
+execution/reth/data/*
+!execution/reth/data/.gitignore
+execution/erigon/data/*
+!execution/erigon/data/.gitignore
+
+# Keep compose files and READMEs
+!execution/geth/docker-compose*.yml
+!execution/geth/README.md
+!execution/geth/clef
 !execution/geth/clef/.gitignore
-!execution/besu/.gitignore
-!execution/nethermind/.gitignore
-!consensus/lighthouse/.gitignore
-!consensus/nimbus/.gitignore
+!execution/besu/docker-compose.yml
+!execution/besu/README.md
+!execution/nethermind/docker-compose.yml
+!execution/nethermind/README.md
+!execution/reth/docker-compose.yml
+!execution/reth/README.md
+!execution/erigon/docker-compose.yml
+!execution/erigon/README.md
 
+# Consensus client data
+consensus/lighthouse/data/*
+!consensus/lighthouse/data/.gitignore
+consensus/nimbus/data/*
+!consensus/nimbus/data/.gitignore
+
+# Keep compose files and READMEs
+!consensus/lighthouse/docker-compose*.yml
+!consensus/lighthouse/README.md
+!consensus/nimbus/docker-compose.yml
+!consensus/nimbus/README.md
+
+# Validator keystores (sensitive!)
 keystores/lighthouse/*
-keystores/nimbus/*
-
 !keystores/lighthouse/.gitignore
+keystores/nimbus/*
 !keystores/nimbus/.gitignore
 
-docker-compose.yml
+# Additional service data
+execbackup/data/*
+socat/logs/*
+mev-boost/data/*
+!mev-boost/docker-compose.yml
+!mev-boost/README.md
+!mev-boost/.gitignore
 
-env
-logs
+# Development/temporary files
+env/
+logs/
+*.log
+.DS_Store
+*.swp
+*.swo
+*~
+
+# IDE files
+.vscode/
+.idea/
+*.iml

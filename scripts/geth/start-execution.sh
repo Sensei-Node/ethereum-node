@@ -27,12 +27,12 @@ if [ "$START_GETH" = "true" ]; then
 		--http --http.addr=0.0.0.0"
 	fi
 
-	if [ "$E_NETWORK" = "prater" -o "$E_NETWORK" = "goerli" ]; then
-		NETWORK_PARAMS="--goerli"
+	if [ "$E_NETWORK" = "sepolia" ]; then
+		NETWORK_PARAMS="--sepolia"
 	fi
 
-	if [ "$E_NETWORK" = "holesky" ]; then
-		NETWORK_PARAMS="--holesky"
+	if [ "$E_NETWORK" = "hoodi" ]; then
+		NETWORK_PARAMS="--hoodi"
 	fi
 
 	if [ "$E_PRIVATE_NETWORK" = "true" ]; then

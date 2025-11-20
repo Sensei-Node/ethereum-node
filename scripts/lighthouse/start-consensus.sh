@@ -7,14 +7,12 @@ if [ "$START_LIGHTHOUSE_CC" = "true" ]; then
 	START_PARAMS=""
 	API_PARAMS=""
 	MEV_BOOST_PARAMS=""
+	GRAFFITI_PARAM=""
+	CHECKPOINT_SYNC_URL_PARAM=""
 	SECRETS_FILE="/jwt.hex"
 
-	if [ "$START_LIGHTHOUSE_VC" != "" ]; then
-		ETH1_FLAG=--eth1
-	fi
-
 	if [ "$C_NETWORK" = "" ]; then
-		E_NETWORK=$DEFAULT_NETWORK
+		C_NETWORK=$DEFAULT_NETWORK
 	fi
 
 
@@ -53,13 +51,12 @@ if [ "$START_LIGHTHOUSE_CC" = "true" ]; then
 
 	exec lighthouse \
 		--debug-level $DEBUG_LEVEL \
-		--network $E_NETWORK \
+		--network $C_NETWORK \
 		beacon_node \
 		$API_PARAMS \
 		$START_PARAMS \
 		$MEV_BOOST_PARAMS \
 		$METRICS_PARAMS \
 		$GRAFFITI_PARAM \
-		$ETH1_FLAG \
 		$CHECKPOINT_SYNC_URL_PARAM
 fi

@@ -1,0 +1,18 @@
+
+services:
+  consensus-lighthouse:
+    image: sigp/lighthouse:${C_VERSION:-latest}
+    container_name: consensus
+    restart: unless-stopped
+    stop_grace_period: 1m
+    networks:
+      - ethereum
+    volumes:
+      - ./consensus/lighthouse/data:/root/.lighthouse
+      - ./scripts/lighthouse/start-consensus.sh:/scripts/start-consensus.sh:ro
+      - ./secrets/jwt.hex:/jwt.hex
+    ports:
+      - 9000:9000
+      - 5052:5052
+    env_file: [".env", "./environments/.env.consensus"]
+    entrypoint: sh /scripts/start-consensus.sh

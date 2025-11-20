@@ -1,0 +1,18 @@
+services:
+  consensus-nimbus:
+    image: statusim/nimbus-eth2:${C_VERSION:-latest}
+    container_name: consensus
+    restart: unless-stopped
+    stop_grace_period: 1m
+    env_file: [".env", "./environments/.env.consensus", "./environments/.env.validator"]
+    networks:
+      - ethereum
+    ports:
+      - 9000:9000
+      - 5052:${BEACON_PORT:-5052}
+    volumes:
+      - ./consensus/nimbus/data:/home/user/nimbus/data
+      - ./secrets/jwt.hex:/jwt.hex
+      - ./scripts/nimbus/start-consensus.sh:/scripts/start-consensus.sh
+      - ./keystores/nimbus:/validator-keys
+    entrypoint: sh /scripts/start-consensus.sh

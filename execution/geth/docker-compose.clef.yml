@@ -1,0 +1,19 @@
+
+services:
+  clef:
+    image: ethereum/client-go:alltools-${E_VERSION:-latest}
+    platform: linux/amd64
+    container_name: clef
+    restart: unless-stopped
+    env_file: [".env", "./environments/.env.execution"]
+    networks:
+      - ethereum
+    volumes:
+      - ./execution/geth/data:/root/.ethereum
+      - ./scripts/geth/start-clef.sh:/scripts/start-clef.sh
+    depends_on:
+      - execution-geth
+    links:
+      - execution-geth
+    entrypoint: sh /scripts/start-clef.sh
+    tty: true

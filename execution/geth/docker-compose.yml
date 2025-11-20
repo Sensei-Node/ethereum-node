@@ -1,0 +1,20 @@
+
+services:
+  execution-geth:
+    image: ethereum/client-go:${E_VERSION:-latest}
+    container_name: execution
+    stop_grace_period: 2m
+    restart: unless-stopped
+    env_file: [".env", "./environments/.env.execution"]
+    networks:
+      - ethereum
+    volumes:
+      - ./execution/geth/data:/root/.ethereum
+      - ./scripts/geth/start-execution.sh:/scripts/start-execution.sh
+      - ./secrets/jwt.hex:/jwt.hex
+    ports:
+      - 30303:30303/tcp
+      - 30303:30303/udp
+      - 8545:8545
+      - 8551:8551
+    entrypoint: sh /scripts/start-execution.sh
